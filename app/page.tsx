@@ -2,35 +2,40 @@
 
 import { useState } from "react"
 import WinBar from "./components/WinBar"
+import { teams } from "./data/teams"
 
 export default function Home() {
 
-  const [team1, setTeam1] = useState("")
-  const [team2, setTeam2] = useState("")
-  const [result, setResult] = useState("")
-  const [prob, setProb] = useState(55)
+  const [team1, setTeam1] = useState("Duke")
+  const [team2, setTeam2] = useState("UNC")
+  const [prob, setProb] = useState(50)
+  const [teamA, setTeamA] = useState<any>(null)
+  const [teamB, setTeamB] = useState<any>(null)
 
-  const runPrediction = async () => {
+  const runPrediction = () => {
 
-    const randomProb = Math.floor(Math.random() * 30) + 50
-    setProb(randomProb)
+    const a = teams.find(t => t.name === team1)
+    const b = teams.find(t => t.name === team2)
 
-    try {
+    if (!a || !b) return
 
-      const res = await fetch("/api/ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          question: `Predict the winner of ${team1} vs ${team2} and explain why`
-        })
-      })
+    setTeamA(a)
+    setTeamB(b)
 
-      const data = await res.json()
-      setResult(data.reply)
+    const powerA = a.adjO - a.adjD + a.tempo
+    const powerB = b.adjO - b.adjD + b.tempo
 
-    } catch {
-      setResult("Prediction engine loading...")
-    }
+    const probability =
+      Math.max(
+        5,
+        Math.min(
+          95,
+          50 + (powerA - powerB) * 1.2
+        )
+      )
+
+    setProb(probability)
+
   }
 
   return (
@@ -39,21 +44,24 @@ export default function Home() {
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(circle at top, #1e3a8a 0%, #020617 80%)",
+          "radial-gradient(circle at top,#1e3a8a 0%,#020617 80%)",
+        color: "white",
         padding: 40,
-        fontFamily: "Arial",
-        color: "white"
+        fontFamily: "Arial"
       }}
     >
 
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
 
-        <h1 style={{ fontSize: 50 }}>College Edge AI</h1>
+        <h1 style={{ fontSize: 48 }}>
+          College Edge AI
+        </h1>
+
         <p style={{ color: "#94a3b8", marginBottom: 40 }}>
           AI-powered college football & basketball analytics
         </p>
 
-        {/* Matchup Input */}
+        {/* MATCHUP PREDICTOR */}
 
         <div
           style={{
@@ -66,41 +74,79 @@ export default function Home() {
 
           <h2>Matchup Predictor</h2>
 
-          <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              marginTop: 20
+            }}
+          >
 
-            <input
-              placeholder="Team 1"
+            {/* TEAM 1 SELECT */}
+
+            <select
               value={team1}
-              onChange={(e) => setTeam1(e.target.value)}
+              onChange={(e) =>
+                setTeam1(e.target.value)
+              }
               style={{
                 padding: 10,
                 borderRadius: 6,
-                border: "1px solid #334155",
                 background: "#020617",
-                color: "white"
+                color: "white",
+                border: "1px solid #334155"
               }}
-            />
+            >
 
-            <input
-              placeholder="Team 2"
+              {teams.map(team => (
+
+                <option
+                  key={team.name}
+                  value={team.name}
+                >
+                  {team.name}
+                </option>
+
+              ))}
+
+            </select>
+
+            {/* TEAM 2 SELECT */}
+
+            <select
               value={team2}
-              onChange={(e) => setTeam2(e.target.value)}
+              onChange={(e) =>
+                setTeam2(e.target.value)
+              }
               style={{
                 padding: 10,
                 borderRadius: 6,
-                border: "1px solid #334155",
                 background: "#020617",
-                color: "white"
+                color: "white",
+                border: "1px solid #334155"
               }}
-            />
+            >
+
+              {teams.map(team => (
+
+                <option
+                  key={team.name}
+                  value={team.name}
+                >
+                  {team.name}
+                </option>
+
+              ))}
+
+            </select>
 
             <button
               onClick={runPrediction}
               style={{
-                padding: "10px 18px",
+                padding: "10px 20px",
                 borderRadius: 6,
-                background: "#3b82f6",
                 border: "none",
+                background: "#3b82f6",
                 color: "white",
                 cursor: "pointer"
               }}
@@ -110,17 +156,37 @@ export default function Home() {
 
           </div>
 
-          <WinBar probability={prob} />
+          {/* TEAM LOGOS */}
 
-          {result && (
-            <p style={{ marginTop: 20, color: "#cbd5e1" }}>
-              {result}
-            </p>
+          {teamA && teamB && (
+
+            <div
+              style={{
+                display: "flex",
+                gap: 20,
+                marginTop: 20
+              }}
+            >
+
+              <img
+                src={teamA.logo}
+                width={60}
+              />
+
+              <img
+                src={teamB.logo}
+                width={60}
+              />
+
+            </div>
+
           )}
+
+          <WinBar probability={prob} />
 
         </div>
 
-        {/* Analytics Cards */}
+        {/* ANALYTICS CARDS */}
 
         <div
           style={{
@@ -171,8 +237,26 @@ export default function Home() {
 
         </div>
 
+        {/* DAILY PREDICTIONS */}
+
+        <div style={{ marginTop: 60 }}>
+
+          <h2>Today's AI Predictions</h2>
+
+          <ul style={{ marginTop: 20 }}>
+
+            <li>Duke vs UNC — Duke 61%</li>
+            <li>Kansas vs Baylor — Kansas 58%</li>
+            <li>UConn vs Marquette — UConn 63%</li>
+
+          </ul>
+
+        </div>
+
       </div>
 
     </main>
+
   )
+
 }
