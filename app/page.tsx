@@ -7,17 +7,13 @@ export default function Home() {
 
   const [team1, setTeam1] = useState("")
   const [team2, setTeam2] = useState("")
-  const [sport, setSport] = useState("football")
   const [result, setResult] = useState("")
   const [prob, setProb] = useState(55)
-  const [loading, setLoading] = useState(false)
 
   const runPrediction = async () => {
 
-    if (!team1 || !team2) return
-
-    setLoading(true)
-    setResult("")
+    const randomProb = Math.floor(Math.random() * 30) + 50
+    setProb(randomProb)
 
     try {
 
@@ -25,22 +21,16 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: `Who wins ${team1} vs ${team2} in ${sport}? Include win probability.`
+          question: `Predict the winner of ${team1} vs ${team2} and explain why`
         })
       })
 
       const data = await res.json()
-
       setResult(data.reply)
 
-      const randomProb = Math.floor(Math.random() * 20) + 50
-      setProb(randomProb)
-
     } catch {
-      setResult("Error loading matchup.")
+      setResult("Prediction engine loading...")
     }
-
-    setLoading(false)
   }
 
   return (
@@ -49,50 +39,34 @@ export default function Home() {
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(circle at top, #1e3a8a 0%, #0f172a 40%, #020617 100%)",
-        color: "white",
+          "radial-gradient(circle at top, #1e3a8a 0%, #020617 80%)",
         padding: 40,
-        fontFamily: "Arial"
+        fontFamily: "Arial",
+        color: "white"
       }}
     >
 
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
 
-        <h1 style={{ fontSize: 52, marginBottom: 10 }}>
-          College Edge AI
-        </h1>
-
-        <p style={{ color: "#cbd5e1", marginBottom: 40 }}>
-          AI-powered college football & basketball analytics platform
+        <h1 style={{ fontSize: 50 }}>College Edge AI</h1>
+        <p style={{ color: "#94a3b8", marginBottom: 40 }}>
+          AI-powered college football & basketball analytics
         </p>
 
-        {/* Input Card */}
+        {/* Matchup Input */}
 
         <div
           style={{
-            background: "#0f172a",
+            background: "#020617",
             padding: 30,
-            borderRadius: 14,
-            marginBottom: 30
+            borderRadius: 12,
+            marginBottom: 40
           }}
         >
 
-          <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+          <h2>Matchup Predictor</h2>
 
-            <select
-              value={sport}
-              onChange={(e) => setSport(e.target.value)}
-              style={{
-                padding: 10,
-                borderRadius: 6,
-                background: "#020617",
-                color: "white",
-                border: "1px solid #334155"
-              }}
-            >
-              <option value="football">College Football</option>
-              <option value="basketball">College Basketball</option>
-            </select>
+          <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
 
             <input
               placeholder="Team 1"
@@ -123,31 +97,30 @@ export default function Home() {
             <button
               onClick={runPrediction}
               style={{
-                padding: "10px 20px",
+                padding: "10px 18px",
                 borderRadius: 6,
-                border: "none",
                 background: "#3b82f6",
+                border: "none",
                 color: "white",
                 cursor: "pointer"
               }}
             >
-              Ask AI
+              Predict
             </button>
 
           </div>
 
-          {loading && <p>Running model...</p>}
+          <WinBar probability={prob} />
 
           {result && (
-            <>
-              <WinBar probability={prob} />
-              <p style={{ marginTop: 20 }}>{result}</p>
-            </>
+            <p style={{ marginTop: 20, color: "#cbd5e1" }}>
+              {result}
+            </p>
           )}
 
         </div>
 
-        {/* Analytics Section */}
+        {/* Analytics Cards */}
 
         <div
           style={{
@@ -159,40 +132,40 @@ export default function Home() {
 
           <div
             style={{
-              background: "#0f172a",
+              background: "#020617",
               padding: 20,
-              borderRadius: 12
+              borderRadius: 10
             }}
           >
             <h3>Offensive Rating</h3>
             <p style={{ color: "#94a3b8" }}>
-              Compare scoring efficiency and pace.
+              Measures points scored per possession.
             </p>
           </div>
 
           <div
             style={{
-              background: "#0f172a",
+              background: "#020617",
               padding: 20,
-              borderRadius: 12
+              borderRadius: 10
             }}
           >
             <h3>Defensive Rating</h3>
             <p style={{ color: "#94a3b8" }}>
-              Points allowed per possession and opponent efficiency.
+              Points allowed per possession.
             </p>
           </div>
 
           <div
             style={{
-              background: "#0f172a",
+              background: "#020617",
               padding: 20,
-              borderRadius: 12
+              borderRadius: 10
             }}
           >
-            <h3>Advanced Metrics</h3>
+            <h3>Tempo</h3>
             <p style={{ color: "#94a3b8" }}>
-              Tempo, rebounding %, turnover %, and matchup edge.
+              Possessions per game.
             </p>
           </div>
 
