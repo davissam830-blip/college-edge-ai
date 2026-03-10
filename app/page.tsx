@@ -9,8 +9,6 @@ export default function Home() {
   const [team1, setTeam1] = useState("Duke")
   const [team2, setTeam2] = useState("UNC")
   const [prob, setProb] = useState(50)
-  const [teamA, setTeamA] = useState<any>(null)
-  const [teamB, setTeamB] = useState<any>(null)
 
   const runPrediction = () => {
 
@@ -18,9 +16,6 @@ export default function Home() {
     const b = teams.find(t => t.name === team2)
 
     if (!a || !b) return
-
-    setTeamA(a)
-    setTeamB(b)
 
     const powerA = a.adjO - a.adjD + a.tempo
     const powerB = b.adjO - b.adjD + b.tempo
@@ -34,8 +29,7 @@ export default function Home() {
         )
       )
 
-    setProb(probability)
-
+    setProb(Math.round(probability))
   }
 
   return (
@@ -58,10 +52,8 @@ export default function Home() {
         </h1>
 
         <p style={{ color: "#94a3b8", marginBottom: 40 }}>
-          AI-powered college football & basketball analytics
+          AI-powered college basketball analytics
         </p>
-
-        {/* MATCHUP PREDICTOR */}
 
         <div
           style={{
@@ -82,13 +74,9 @@ export default function Home() {
             }}
           >
 
-            {/* TEAM 1 SELECT */}
-
             <select
               value={team1}
-              onChange={(e) =>
-                setTeam1(e.target.value)
-              }
+              onChange={(e) => setTeam1(e.target.value)}
               style={{
                 padding: 10,
                 borderRadius: 6,
@@ -111,13 +99,9 @@ export default function Home() {
 
             </select>
 
-            {/* TEAM 2 SELECT */}
-
             <select
               value={team2}
-              onChange={(e) =>
-                setTeam2(e.target.value)
-              }
+              onChange={(e) => setTeam2(e.target.value)}
               style={{
                 padding: 10,
                 borderRadius: 6,
@@ -156,37 +140,9 @@ export default function Home() {
 
           </div>
 
-          {/* TEAM LOGOS */}
-
-          {teamA && teamB && (
-
-            <div
-              style={{
-                display: "flex",
-                gap: 20,
-                marginTop: 20
-              }}
-            >
-
-              <img
-                src={teamA.logo}
-                width={60}
-              />
-
-              <img
-                src={teamB.logo}
-                width={60}
-              />
-
-            </div>
-
-          )}
-
           <WinBar probability={prob} />
 
         </div>
-
-        {/* ANALYTICS CARDS */}
 
         <div
           style={{
@@ -237,18 +193,14 @@ export default function Home() {
 
         </div>
 
-        {/* DAILY PREDICTIONS */}
-
         <div style={{ marginTop: 60 }}>
 
           <h2>Today's AI Predictions</h2>
 
           <ul style={{ marginTop: 20 }}>
-
             <li>Duke vs UNC — Duke 61%</li>
             <li>Kansas vs Baylor — Kansas 58%</li>
             <li>UConn vs Marquette — UConn 63%</li>
-
           </ul>
 
         </div>
@@ -259,4 +211,4 @@ export default function Home() {
 
   )
 
-}
+} 
