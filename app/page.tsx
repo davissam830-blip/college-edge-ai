@@ -13,7 +13,7 @@ const [probability, setProbability] = useState<number | null>(null)
 const teamAData = teams.find(t => t.name === teamA)
 const teamBData = teams.find(t => t.name === teamB)
 
-const predict = () => {
+function predict() {
 
 if (!teamAData || !teamBData) return
 
@@ -24,7 +24,6 @@ const prob = 50 + (scoreA - scoreB) * 2
 const finalProb = Math.max(5, Math.min(95, prob))
 
 setProbability(Math.round(finalProb))
-
 }
 
 return (
@@ -40,8 +39,6 @@ fontFamily:"Arial"
 <h1 style={{fontSize:48}}>College Edge AI</h1>
 <p style={{opacity:.7}}>AI-powered college basketball analytics</p>
 
-{/* MATCHUP BOX */}
-
 <div style={{
 background:"#020c24",
 padding:30,
@@ -54,6 +51,7 @@ maxWidth:900
 
 <select value={teamA} onChange={e=>setTeamA(e.target.value)}>
 {teams.map(t=>(
+
 <option key={t.name}>{t.name}</option>
 ))}
 </select>
@@ -62,8 +60,11 @@ maxWidth:900
 value={teamB}
 onChange={e=>setTeamB(e.target.value)}
 style={{marginLeft:10}}
+
 >
+
 {teams.map(t=>(
+
 <option key={t.name}>{t.name}</option>
 ))}
 </select>
@@ -79,22 +80,19 @@ borderRadius:6,
 color:"white",
 cursor:"pointer"
 }}
+
 >
-Predict
-</button>
+
+Predict </button>
 
 {probability !== null && (
-<>
-<WinBar probability={probability} />
-<p style={{marginTop:10}}>
-Win Probability: {probability}%
-</p>
+<> <WinBar probability={probability}/>
+
+<p style={{marginTop:10}}>Win Probability: {probability}%</p>
 </>
 )}
 
 </div>
-
-{/* TEAM DISPLAY */}
 
 {teamAData && teamBData && (
 
@@ -110,7 +108,7 @@ marginTop:30
 <b>{teamAData.name}</b>
 </div>
 
-<span style={{opacity:.7}}>vs</span>
+<span style={{opacity:.6}}>vs</span>
 
 <div style={{display:"flex",alignItems:"center",gap:10}}>
 <img src={teamBData.logo} width={50}/>
@@ -120,8 +118,6 @@ marginTop:30
 </div>
 
 )}
-
-{/* ANALYTICS */}
 
 {teamAData && teamBData && (
 
@@ -164,20 +160,13 @@ borderRadius:10
 
 )}
 
-{/* AI PICKS */}
-
 <div style={{marginTop:40}}>
-
 <h3>Today's AI Predictions</h3>
-
 <p>Duke vs UNC — Duke 61%</p>
 <p>Kansas vs Baylor — Kansas 58%</p>
 <p>UConn vs Marquette — UConn 63%</p>
-
 </div>
 
 </main>
-
 )
-
-} 
+}
