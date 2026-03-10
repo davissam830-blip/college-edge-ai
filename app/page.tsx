@@ -136,7 +136,33 @@ export default function Home() {
           )}
 
         </div>
+{teamAData && teamBData && (
+  <div style={{ display: "flex", gap: 40, marginTop: 20, alignItems: "center" }}>
+    
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <img
+        src={teamAData.logo}
+        alt={teamAData.name}
+        width={40}
+        height={40}
+      />
+      <span>{teamAData.name}</span>
+    </div>
 
+    <div style={{ fontSize: 18 }}>vs</div>
+
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <img
+        src={teamBData.logo}
+        alt={teamBData.name}
+        width={40}
+        height={40}
+      />
+      <span>{teamBData.name}</span>
+    </div>
+
+  </div>
+)}
         <div
           style={{
             display: "grid",
